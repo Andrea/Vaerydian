@@ -14,9 +14,9 @@ Vaerydian can be compiled under both Windows (MonoGame WindowsGL) and Linux(Mono
 
 ### Pre-Build
 To build Vaerydian you need to compile all the appropriate libraries beforehand (listed above). The best way to compile them is to use the following order:
-1 MonoGame, BehaviorLibrary, ECSFramework, LibNoise, fastJSON
-2 Glimpse, AgentComponentBus
-3 Vaerydian
+* MonoGame, BehaviorLibrary, ECSFramework, LibNoise, fastJSON
+* Glimpse, AgentComponentBus
+* Vaerydian
 
 ### Post-Build
 After Vaerydian has been built, copy the Content directory to the build output directory and run the game.
