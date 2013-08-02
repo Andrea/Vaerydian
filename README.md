@@ -9,9 +9,17 @@ Vaerydian is an in-work Action RPG written in C# utilizing:
 * [fastJSON](http://fastjson.codeplex.com) - A Very fast JSON parser, used for driving the game with data
 * [LibNoise](http://libnoisedotnet.codeplex.com) - a C# implementation of the famous libnoise noise framework, used for procedural content
 
+## Building:
 Vaerydian can can compile under both Windows (MonoGame WindowsGL) and Linux(MonoGame Linux).
 
-When built, copy the Content directory to the build output directory and run the game.
+### Pre-Build
+To build Vaerydian you need to compile all the appropriate libraries beforehand (listed above). The best way to compile them is to use the following order:
+1. MonoGame, BehaviorLibrary, ECSFramework, LibNoise, fastJSON
+2. Glimpse, AgentComponentBus
+3. Vaerydian
+
+### Post-Build
+After Vaerydian has been built, copy the Content directory to the build output directory and run the game.
 
 ### Dependencies on Linux:
 These are dependencies that I have typically had to double-check to install on most Linux distros. There may be others, but the error output of mono & MonoGame is usually good at telling you what is missing.
