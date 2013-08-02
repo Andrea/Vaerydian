@@ -10,7 +10,7 @@ Vaerydian is an in-work Action RPG written in C# utilizing:
 * [LibNoise](http://libnoisedotnet.codeplex.com) - a C# implementation of the famous libnoise noise framework, used for procedural content
 
 ## Building:
-Vaerydian can can compile under both Windows (MonoGame WindowsGL) and Linux(MonoGame Linux).
+Vaerydian can be compiled under both Windows (MonoGame WindowsGL) and Linux(MonoGame Linux).
 
 ### Pre-Build
 To build Vaerydian you need to compile all the appropriate libraries beforehand (listed above). The best way to compile them is to use the following order:
