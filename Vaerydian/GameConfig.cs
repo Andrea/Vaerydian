@@ -311,7 +311,7 @@ namespace Vaerydian
 		/// <returns><c>true</c>, if character animation was loaded, <c>false</c> otherwise.</returns>
 		private static bool loadCharacterAnimation(){
 			try{
-				string json = g_JM.loadJSON("./Content/json/animation.v");
+				string json = g_JM.loadJSON("./Content/json/avatars.v");
 				JsonObject jo = g_JM.jsonToJsonObject(json);
 
 				//construct all animation defs
@@ -388,7 +388,7 @@ namespace Vaerydian
 				jo = g_JM.jsonToJsonObject(json);
 				
 				//add character defs
-				List<Dictionary<string,object>> cDefs = jo["character_defs"].asList<Dictionary<string,object>>();
+				List<Dictionary<string,object>> cDefs = jo["avatar_defs"].asList<Dictionary<string,object>>();
 
 				foreach(Dictionary<string,object> dict in cDefs){
 					jo = new JsonObject(dict);
@@ -429,18 +429,154 @@ namespace Vaerydian
 		/// <returns><c>true</c>, if creatures was loaded, <c>false</c> otherwise.</returns>
 		private static bool loadCreatures(){
 			try{
-				string json = g_JM.loadJSON ("./Content/json/creatures.v");
+				string json = g_JM.loadJSON ("./Content/json/characters.v");
 				JsonObject jo = g_JM.jsonToJsonObject (json);
 
-				List<Dictionary<string,object>> cDefs = jo ["creature_defs"].asList<Dictionary<string,object>> ();
+				List<Dictionary<string,object>> cDefs = jo ["character_defs"].asList<Dictionary<string,object>> ();
 
 				foreach (Dictionary<string,object> dict in cDefs) {
 					jo = new JsonObject(dict);
 
 					CharacterDef cDef = default(CharacterDef);
 					cDef.Name = jo["name"].asString();
-					cDef.AvatarDef = AvatarDefs[jo["character_def"].asString()];
+					cDef.AvatarDef = AvatarDefs[jo["avatar_def"].asString()];
 					cDef.SkillLevel = jo["skill_level"].asInt();
+                    cDef.InfoDef.Name = jo["information","name"].asString();
+                    cDef.InfoDef.GeneralGroup = jo["information", "general_group"].asString();
+                    cDef.InfoDef.VariationGroup = jo["information", "variation_group"].asString();
+                    cDef.InfoDef.UniqueGroup = jo["information", "unique_group"].asString();
+                    cDef.LifeDef.DeathLongevity = jo["life","death_longevity"].asInt();
+
+                    //setup interactions
+                    cDef.SupportedInteractions.ATTACKABLE = jo["supported_interactions", "ATTACKABLE"].asBool();
+                    cDef.SupportedInteractions.AWARDS_VICTORY = jo["supported_interactions", "AWARDS_VICTORY"].asBool();
+                    cDef.SupportedInteractions.CAUSES_ADVANCEMENT = jo["supported_interactions", "CAUSES_ADVANCEMENT"].asBool();
+                    cDef.SupportedInteractions.DESTROYABLE = jo["supported_interactions", "DESTROYABLE"].asBool();
+                    cDef.SupportedInteractions.MAY_ADVANCE = jo["supported_interactions", "MAY_ADVANCE"].asBool();
+                    cDef.SupportedInteractions.MAY_RECEIVE_VICTORY = jo["supported_interactions", "MAY_RECEIVE_VICTORY"].asBool();
+                    cDef.SupportedInteractions.MELEE_ACTIONABLE = jo["supported_interactions", "MELEE_ACTIONABLE"].asBool();
+                    cDef.SupportedInteractions.PROJECTILE_COLLIDABLE = jo["supported_interactions", "PROJECTILE_COLLIDABLE"].asBool();
+
+                    //setup equipment here at some point...
+                    //cDef.EquipmentDef = default(EquipmentDef);
+
+                    //setup knowledges
+                    cDef.KnowledgesDef.GeneralKnowledges = new List<Knowledge>();
+                    cDef.KnowledgesDef.VariationKnowledges = new List<Knowledge>();
+                    cDef.KnowledgesDef.UniqueKnowledges = new List<Knowledge>();
+
+                    //start with general
+                    List<Dictionary<string, object>> gkDefs = jo["knowledges", "general"].asList<Dictionary<string, object>>();
+                    foreach (Dictionary<string, object> gkDict in gkDefs)
+                    {
+                        jo = new JsonObject(gkDict);
+
+                        Knowledge gk = default(Knowledge);
+                        gk.Name = jo["name"].asString();
+                        gk.Value = jo["value"].asFloat();
+                        gk.KnowledgeType = jo["knowledge_type"].asEnum<KnowledgeType>();
+
+                        cDef.KnowledgesDef.GeneralKnowledges.Add(gk);
+                    }
+
+                    //reset json object
+                    jo = new JsonObject(dict);
+
+                    //then variation
+                    gkDefs = jo["knowledges", "variation"].asList<Dictionary<string, object>>();
+                    foreach (Dictionary<string, object> gkDict in gkDefs)
+                    {
+                        jo = new JsonObject(gkDict);
+
+                        Knowledge gk = default(Knowledge);
+                        gk.Name = jo["name"].asString();
+                        gk.Value = jo["value"].asFloat();
+                        gk.KnowledgeType = jo["knowledge_type"].asEnum<KnowledgeType>();
+
+                        cDef.KnowledgesDef.VariationKnowledges.Add(gk);
+                    }
+
+                    //reset json object
+                    jo = new JsonObject(dict);
+
+                    //then unique
+                    gkDefs = jo["knowledges", "unique"].asList<Dictionary<string, object>>();
+                    foreach (Dictionary<string, object> gkDict in gkDefs)
+                    {
+                        jo = new JsonObject(gkDict);
+
+                        Knowledge gk = default(Knowledge);
+                        gk.Name = jo["name"].asString();
+                        gk.Value = jo["value"].asFloat();
+                        gk.KnowledgeType = jo["knowledge_type"].asEnum<KnowledgeType>();
+
+                        cDef.KnowledgesDef.UniqueKnowledges.Add(gk);
+                    }
+
+                    //reset json object
+                    jo = new JsonObject(dict);
+
+                    //setup statistics
+                    cDef.StatisticsDef.Endurance.Name = jo["statistics", "endurance", "name"].asString();
+                    cDef.StatisticsDef.Endurance.Value = jo["statistics", "endurance", "value"].asInt();
+                    cDef.StatisticsDef.Endurance.StatType = jo["statistics", "endurance", "stat_type"].asEnum<StatType>();
+
+                    cDef.StatisticsDef.Focus.Name = jo["statistics", "focus", "name"].asString();
+                    cDef.StatisticsDef.Focus.Value = jo["statistics", "focus", "value"].asInt();
+                    cDef.StatisticsDef.Focus.StatType = jo["statistics", "focus", "stat_type"].asEnum<StatType>();
+
+                    cDef.StatisticsDef.Mind.Name = jo["statistics", "mind", "name"].asString();
+                    cDef.StatisticsDef.Mind.Value = jo["statistics", "mind", "value"].asInt();
+                    cDef.StatisticsDef.Mind.StatType = jo["statistics", "mind", "stat_type"].asEnum<StatType>();
+
+                    cDef.StatisticsDef.Muscle.Name = jo["statistics", "muscle", "name"].asString();
+                    cDef.StatisticsDef.Muscle.Value = jo["statistics", "muscle", "value"].asInt();
+                    cDef.StatisticsDef.Muscle.StatType = jo["statistics", "muscle", "stat_type"].asEnum<StatType>();
+
+                    cDef.StatisticsDef.Perception.Name = jo["statistics", "perception", "name"].asString();
+                    cDef.StatisticsDef.Perception.Value = jo["statistics", "perception", "value"].asInt();
+                    cDef.StatisticsDef.Perception.StatType = jo["statistics", "perception", "stat_type"].asEnum<StatType>();
+
+                    cDef.StatisticsDef.Personality.Name = jo["statistics", "personality", "name"].asString();
+                    cDef.StatisticsDef.Personality.Value = jo["statistics", "personality", "value"].asInt();
+                    cDef.StatisticsDef.Personality.StatType = jo["statistics", "personality", "stat_type"].asEnum<StatType>();
+
+                    cDef.StatisticsDef.Quickness.Name = jo["statistics", "quickness", "name"].asString();
+                    cDef.StatisticsDef.Quickness.Value = jo["statistics", "quickness", "value"].asInt();
+                    cDef.StatisticsDef.Quickness.StatType = jo["statistics", "quickness", "stat_type"].asEnum<StatType>();
+
+                    //setup skills
+                    cDef.SkillsDef.Avoidance.Name = jo["skills", "avoidance", "name"].asString();
+                    cDef.SkillsDef.Avoidance.Value = jo["skills", "avoidance", "value"].asInt();
+                    cDef.SkillsDef.Avoidance.SkillType = jo["skills", "avoidance", "skill_type"].asEnum<SkillType>();
+
+                    cDef.SkillsDef.Melee.Name = jo["skills", "melee", "name"].asString();
+                    cDef.SkillsDef.Melee.Value = jo["skills", "melee", "value"].asInt();
+                    cDef.SkillsDef.Melee.SkillType = jo["skills", "melee", "skill_type"].asEnum<SkillType>();
+
+                    cDef.SkillsDef.Ranged.Name = jo["skills", "ranged", "name"].asString();
+                    cDef.SkillsDef.Ranged.Value = jo["skills", "ranged", "value"].asInt();
+                    cDef.SkillsDef.Ranged.SkillType = jo["skills", "ranged", "skill_type"].asEnum<SkillType>();
+
+                    //setup factions
+                    cDef.FactionsDef.OwnerFaction.Name = jo["factions", "owner_faction", "name"].asString();
+                    cDef.FactionsDef.OwnerFaction.Value = jo["factions", "owner_faction", "value"].asInt();
+                    cDef.FactionsDef.OwnerFaction.FactionType = jo["factions", "owner_faction", "faction_type"].asEnum<FactionType>();
+
+                    cDef.FactionsDef.Factions = new List<Faction>();
+                    List<Dictionary<string, object>> fDefs = jo["factions", "known_factions"].asList<Dictionary<string, object>>();
+                    foreach (Dictionary<string, object> fDict in fDefs)
+                    {
+                        jo = new JsonObject(fDict);
+
+                        Faction fDef = default(Faction);
+
+                        fDef.Name = jo["name"].asString();
+                        fDef.Value = jo["value"].asInt();
+                        fDef.FactionType = jo["faction_type"].asEnum<FactionType>();
+
+                        cDef.FactionsDef.Factions.Add(fDef);
+                    }
 
 					CharacterDefs.Add(cDef.Name,cDef);
 				}

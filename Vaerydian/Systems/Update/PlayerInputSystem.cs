@@ -364,6 +364,21 @@ namespace Vaerydian.Systems.Update
 				}
 			}
 
+            if (!p_Moved)
+            {
+                p_Movement.reset();
+                character.CurrentAnimtaion = "IDLE";
+            }
+            else
+            {
+
+                if (p_LastNode != null)
+                    p_LastNode.Contents.Remove(entity);
+
+                p_LastNode = spatial.QuadTree.setContentAtLocation(entity, pos + new Vector2(16, 16));
+
+            }
+
 			//TEST FUNCTIONS PAST HERE
 
             if (InputManager.isKeyPressed(Keys.Up))
@@ -386,21 +401,6 @@ namespace Vaerydian.Systems.Update
                 transform.RotationOrigin = new Vector2(0);
             }
 
-            if (!p_Moved)
-            {
-                p_Movement.reset();
-                character.CurrentAnimtaion = "IDLE";
-            }
-            else
-            {
-
-                if (p_LastNode != null)
-                    p_LastNode.Contents.Remove(entity);
-
-                p_LastNode = spatial.QuadTree.setContentAtLocation(entity, pos + new Vector2(16,16));
-
-            }
-
             if(InputManager.isKeyPressed(Keys.P))
             {
 
@@ -413,7 +413,10 @@ namespace Vaerydian.Systems.Update
             {
 
                 NPCFactory ef = new NPCFactory(e_ECSInstance);
-                ef.createBatEnemy(mPosition.Pos + mPosition.Offset - new Vector2(16),15);
+                //ef.createBatEnemy(mPosition.Pos + mPosition.Offset - new Vector2(16),15);
+                CharacterDef cDef = GameConfig.CharacterDefs["BAT"];
+                cDef.SkillLevel = 15;
+                ef.createCharacter(cDef, mPosition.Pos + mPosition.Offset - new Vector2(16));
 
             }
 

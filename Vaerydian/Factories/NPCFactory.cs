@@ -351,13 +351,16 @@ namespace Vaerydian.Factories
 			n_EcsInstance.EntityManager.addComponent(e, interact);
 
 			//create test equipment
+            //FIXME: 
 			ItemFactory iFactory = new ItemFactory(n_EcsInstance);
 			n_EcsInstance.EntityManager.addComponent(e, iFactory.createTestEquipment());
 
 			//setup knowledges
 			Knowledges knowledges = new Knowledges();
 			foreach (Knowledge knowledge in characterDef.KnowledgesDef.GeneralKnowledges) {
-				knowledges.GeneralKnowledge.Add(knowledge.Name,knowledge);
+                Knowledge k = knowledge;
+                k.Value = characterDef.SkillLevel;
+				knowledges.GeneralKnowledge.Add(knowledge.Name,k);
 			}
 
 			foreach (Knowledge knowledge in characterDef.KnowledgesDef.VariationKnowledges) {
@@ -372,12 +375,19 @@ namespace Vaerydian.Factories
 			//setup attributes
 			Statistics statistics = new Statistics();
 			statistics.Endurance = characterDef.StatisticsDef.Endurance;
+            statistics.Endurance.Value = characterDef.SkillLevel;
 			statistics.Focus = characterDef.StatisticsDef.Focus;
+            statistics.Focus.Value = characterDef.SkillLevel;
 			statistics.Mind = characterDef.StatisticsDef.Mind;
+            statistics.Mind.Value = characterDef.SkillLevel;
 			statistics.Muscle = characterDef.StatisticsDef.Muscle;
+            statistics.Muscle.Value = characterDef.SkillLevel;
 			statistics.Perception = characterDef.StatisticsDef.Perception;
+            statistics.Perception.Value = characterDef.SkillLevel;
 			statistics.Personality = characterDef.StatisticsDef.Personality;
+            statistics.Personality.Value = characterDef.SkillLevel;
 			statistics.Quickness = characterDef.StatisticsDef.Quickness;
+            statistics.Quickness.Value = characterDef.SkillLevel;
 			n_EcsInstance.EntityManager.addComponent(e, statistics);
 
 			//create health
@@ -409,7 +419,7 @@ namespace Vaerydian.Factories
 
 			n_EcsInstance.EntityManager.addComponent(e, EntityFactory.createLight(true, 3, new Vector3(position, 10), 0.5f, new Vector4(1,1,.6f, 1)));
 
-			n_EcsInstance.GroupManager.addEntityToGroup("CHARACTERS", e);
+			n_EcsInstance.GroupManager.addEntityToGroup("WANDERERS", e);
 
 			n_EcsInstance.refresh(e);
 
@@ -435,7 +445,10 @@ namespace Vaerydian.Factories
 
                     if (!map.Map.Terrain[x, y].IsBlocking)
                     {
-                        createBatEnemy(new Vector2(x * 32, y * 32), skillLevel);
+                        //createBatEnemy(new Vector2(x * 32, y * 32), skillLevel);
+                        CharacterDef cDef = GameConfig.CharacterDefs["BAT"];
+                        cDef.SkillLevel = skillLevel;
+                        createCharacter(cDef, new Vector2(x * 32, y * 32));
                         placed = true;
                     }
 

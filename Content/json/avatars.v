@@ -1,5 +1,5 @@
 {
-	"character_defs":[
+	"avatar_defs":[
 		{
 			"name": "BAT",
 			"skeletons": [

@@ -55,9 +55,11 @@
     <Compile Include="Components\Characters\Award.cs" />
     <Compile Include="Components\Characters\Factions.cs" />
     <Compile Include="Components\Characters\Health.cs" />
+    <Compile Include="Components\Characters\History.cs" />
     <Compile Include="Components\Characters\Information.cs" />
     <Compile Include="Components\Characters\Knowledges.cs" />
     <Compile Include="Components\Characters\Life.cs" />
+    <Compile Include="Components\Characters\Persona.cs" />
     <Compile Include="Components\Characters\Skills.cs" />
     <Compile Include="Components\Dbg\MapDebug.cs" />
     <Compile Include="Components\Graphical\FloatingText.cs" />
